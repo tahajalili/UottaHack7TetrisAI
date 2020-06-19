@@ -7,11 +7,14 @@ let tileID;
 let canHold = true;
 let gameLoop;
 let tileQueue;
+let movesTree;
 
 function controller() {
     generateState();
-    gameLoop = setInterval(onUpdate,500);
+    gameLoop = setInterval(onUpdate,1000);
     spawnTile(Math.floor(Math.random()*6));
+    movesTree = initialiseTree();
+    searchMovesTree(tileID, movesTree, 3);
 }
 
 function onUpdate() {
@@ -82,6 +85,10 @@ function drawGame() {
         ctx.fillRect( xPos, yPos, width, height);
         ctx.strokeRect( xPos, yPos, width, height);
     });
+
+    if(previewMove != undefined) {
+        drawMovePreview(previewMove);
+    }
 }
 
 function spawnTile(type) {
@@ -144,6 +151,8 @@ function dropTile() {
         }
         tileQueue[2] = Math.floor(Math.random()*7);
         drawQueue();
+        movesTree = initialiseTree();
+        searchMovesTree(tileID, movesTree, 3);
     }
 }
 
@@ -151,11 +160,14 @@ function collision(tilesInMotion, gridState) {
     let collision = false;
     tilesInMotion.forEach((tile) => {
         // Check if tile is going over the edge
-        if(tile.x == -1 || tile.x == gridState[0].length) {
+        if(tile.x < 0 || tile.x >= gridState[0].length) {
+            collision = true;
+        }
+        else if(tile.y < 0 || tile.y >= gridState.length) {
             collision = true;
         }
         // Check if tile is on bottom row
-        if(tile.y == gridState.length) {
+        else if(tile.y == gridState.length) {
             // If so, there will be a collision
             collision = true;
         }
@@ -233,7 +245,6 @@ function rotatePeice() {
     
     tilesInMotion.forEach((tile) => {
         if(tile.x < minX) { minX = tile.x }
-        if(tile.x > maxX) { maxX = tile.x }
         if(tile.y < minY) { minY = tile.y }
     });
 
@@ -241,12 +252,17 @@ function rotatePeice() {
     let newPos = [];
     // Create a transpose of the falling peice
     tilesInMotion.forEach((tile) => {
-        newPos.push({y: tile.x - minX + minY, x: tile.y - minY + minX});
+        newPos.push({y: tile.x - minX + minY, x: (tile.y - minY) + minX});
+    });
+
+    // Get the maximum X
+    newPos.forEach((tile) => {
+        if(tile.x > maxX) { maxX = tile.x }
     });
 
     // Now reverse the columns
     newPos.forEach((tile) => {
-        tile.x = maxX - tile.x + minX;
+        tile.x = (maxX - tile.x) + minX;
     });
 
     // Check for any potential collisions
@@ -453,4 +469,16 @@ function drawQueue() {
             ctx.strokeRect(tile.x * 15 + xOffset, tile.y * 15 + yOffset + queueOffset, 15, 15);
         });
     }
+}
+
+function pauseGame() {
+    document.getElementById('pauseButton').style.display = 'None';
+    document.getElementById('resumeButton').style.display = 'Block';
+    clearInterval(gameLoop);
+}
+
+function resumeGame() {
+    document.getElementById('pauseButton').style.display = 'Block';
+    document.getElementById('resumeButton').style.display = 'None';
+    gameLoop = setInterval(onUpdate,1000);
 }
