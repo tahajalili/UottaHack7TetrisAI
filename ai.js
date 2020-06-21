@@ -97,6 +97,7 @@ function searchMovesTree(currentPeice, tree, depthLimit) {
     });
     previewMove = children[bestMove].peice;
     drawMovePreview(children[bestMove].peice);
+    makeDesiredMove();
 }
 
 function getPossibleMoves(currentPeice, gridState) {
@@ -283,4 +284,29 @@ function mergeMove(move, grid) {
         grid[tile.y][tile.x] = 1;
     });
     return grid;
+}
+
+function makeDesiredMove() {
+    // Rotate the peice
+    for(let rotation = 0; rotation < previewMove.r; rotation++) {
+        rotatePeice();
+    }
+    // Move the peice to the correct x position
+    let currentXPos = Infinity;
+    tilesInMotion.forEach((tile) => {
+        if(tile.x < currentXPos) {
+            currentXPos = tile.x;
+        }
+    });
+    let deltaX = currentXPos - previewMove.x;
+    if(deltaX > 0) {
+        for(let move = 0; move < deltaX; move++) {
+            movePeice('L');
+        }
+    }
+    else if(deltaX < 0) {
+        for(let move = 0; move < -deltaX; move++) {
+            movePeice('R');
+        }
+    }
 }

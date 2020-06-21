@@ -11,7 +11,7 @@ let movesTree;
 
 function controller() {
     generateState();
-    gameLoop = setInterval(onUpdate,1000);
+    gameLoop = setInterval(onUpdate,200);
     spawnTile(Math.floor(Math.random()*6));
     movesTree = initialiseTree();
     searchMovesTree(tileID, movesTree, 3);
@@ -480,5 +480,5 @@ function pauseGame() {
 function resumeGame() {
     document.getElementById('pauseButton').style.display = 'Block';
     document.getElementById('resumeButton').style.display = 'None';
-    gameLoop = setInterval(onUpdate,1000);
+    gameLoop = setInterval(onUpdate,200);
 }
