@@ -5,16 +5,16 @@ let score = 0;
 let holdTileID;
 let tileID;
 let canHold = true;
-let gameLoop;
-let tileQueue;
-let movesTree;
+let gameLoop, tileQueue, movesTree;
 
 function controller() {
     generateState();
     gameLoop = setInterval(onUpdate,200);
     spawnTile(Math.floor(Math.random()*6));
-    movesTree = initialiseTree();
-    searchMovesTree(tileID, movesTree, 3);
+    if(aiEnabled) {
+        movesTree = initialiseTree();
+        searchMovesTree(tileID, movesTree, observeMoves);
+    }
 }
 
 function onUpdate() {
@@ -151,8 +151,11 @@ function dropTile() {
         }
         tileQueue[2] = Math.floor(Math.random()*7);
         drawQueue();
-        movesTree = initialiseTree();
-        searchMovesTree(tileID, movesTree, 3);
+        if(aiEnabled) {
+            movesTree = initialiseTree();
+            console.log(`Building tree with ${observeMoves} moves`);
+            searchMovesTree(tileID, movesTree, observeMoves);
+        }
     }
 }
 

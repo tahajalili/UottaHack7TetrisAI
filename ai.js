@@ -33,7 +33,7 @@ class Tree {
     }
 }
 
-let previewMove;
+let previewMove, aiEnabled = true, observeMoves = 2;
 
 function initialiseTree() {
     let currentState = [];
@@ -309,4 +309,20 @@ function makeDesiredMove() {
             movePeice('R');
         }
     }
+}
+
+function toggleAI(element) {
+    let value = element.checked;
+    if(value) {
+        // Enable AI
+        aiEnabled = true;
+    }
+    else {
+        aiEnabled = false;
+    }
+}
+
+function setObserveMoves(element) {
+    let value = element.value;
+    observeMoves = parseInt(value);
 }
