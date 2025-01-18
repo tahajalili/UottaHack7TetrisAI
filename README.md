@@ -5,3 +5,5 @@ This goal of this small project is to create an AI that is able to play the clas
 ## Usage
 
 The project is simply a static HTML file, just open it in a web browser and the game + AI will start immediately. Currently the AI is limited to simply suggesting where to put the current peice. The next update will introduce the ability for the AI for to place the peice in the desired location.
+
+andrei wuz here
